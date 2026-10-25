@@ -204,5 +204,51 @@ class PatientService:
         else:
             print("Patient not found.")
 
-    
-    
+    def get_all_patients(self):
+        return self.db.fetch_all("SELECT * FROM patients")
+        
+
+    def create_patient(self, name, age, gender, contact, address, disease, symptoms, medical_history):
+        patient = Patient(
+            name, age, gender, contact, address, disease, symptoms, medical_history
+        )
+
+        self.db.insert(
+            "patients",
+            ["name", "age", "gender", "contact", "address", "disease",
+            "symptoms", "medical_history"],
+            (
+                patient.name, patient.age, patient.gender, patient.contact,
+                patient.address, patient.disease, patient.symptoms,
+                patient.medical_history
+            )
+        )
+
+    def update_patient_record(self, patient_id, name, age, gender, contact,
+                          address, disease, symptoms, medical_history):
+        self.db.update(
+            "patients",
+            "name = ?, age = ?, gender = ?, contact = ?, address = ?, "
+            "disease = ?, symptoms = ?, medical_history = ?",
+            "patient_id = ?",
+            (name, age, gender, contact, address, disease, symptoms,
+            medical_history, patient_id)
+        )
+
+    def delete_patient_by_id(self, patient_id):
+        appointment = self.db.fetch_one(
+            "SELECT appointment_id FROM appointments WHERE patient_id = ?",
+            (patient_id,)
+        )
+
+        if appointment:
+            return False
+
+        self.db.delete("patients", "patient_id = ?", (patient_id,))
+        return True
+
+    def get_patient_by_id(self, patient_id):
+        return self.db.fetch_one(
+            "SELECT * FROM patients WHERE patient_id = ?",
+            (patient_id,)
+    )

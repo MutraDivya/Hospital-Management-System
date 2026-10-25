@@ -1,11 +1,14 @@
+from pathlib import Path
 import sqlite3
 
 class Database:
     def __init__(self):
-        self.connection = sqlite3.connect("database/hospital.db")
+        db_path = Path(__file__).resolve().parent.parent / "database" / "hospital.db"
+        self.connection = sqlite3.connect(db_path)
         self.connection.execute("PRAGMA foreign_keys = ON")
         self.cursor = self.connection.cursor()
-
+    
+    
     def create_patient_table(self):
         self.cursor.execute("""
         CREATE TABLE IF NOT EXISTS patients (

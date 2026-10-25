@@ -110,3 +110,30 @@ class DoctorService:
             (doctor_id,)
         )
         print("\nDoctor deleted successfully!")
+
+    def get_all_doctors(self):
+        return self.db.fetch_all("SELECT * FROM doctors")
+
+    def create_doctor(self, name, specialization, contact):
+        doctor = Doctor(name, specialization, contact)
+
+        self.db.insert(
+            "doctors",
+            ["name", "specialization", "contact"],
+            (doctor.name, doctor.specialization, doctor.contact)
+        )
+
+    def update_doctor_record(self, doctor_id, name, specialization, contact):
+        self.db.update(
+            "doctors",
+            "name = ?, specialization = ?, contact = ?",
+            "doctor_id = ?",
+            (name, specialization, contact, doctor_id)
+        )
+
+    def delete_doctor_by_id(self, doctor_id):
+        self.db.delete(
+            "doctors",
+            "doctor_id = ?",
+            (doctor_id,)
+        )

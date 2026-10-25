@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patients</title>
+</head>
+<body>
+
+<h1>Patients</h1>
+{% if error %}
+<p style="color: red;">{{ error }}</p>
+{% endif %}
+
+<form method="post">
+    <p><label>Name: <input type="text" name="name" required></label></p>
+    <p><label>Age: <input type="number" name="age" min="1" required></label></p>
+    <p><label>Gender: <input type="text" name="gender" required></label></p>
+    <p><label>Contact: <input type="text" name="contact" required></label></p>
+    <p><label>Address: <input type="text" name="address"></label></p>
+    <p><label>Disease: <input type="text" name="disease"></label></p>
+    <p><label>Symptoms: <input type="text" name="symptoms"></label></p>
+    <p><label>Medical history: <input type="text" name="medical_history"></label></p>
+    <button type="submit">Add Patient</button>
+</form>
+
+<form method="get" action="/patients/search">
+    <label>Search by patient ID:</label>
+    <input type="number" name="patient_id" min="1" required>
+    <button type="submit">Search</button>
+    <a href="/patients">Show all patients</a>
+</form>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Gender</th>
+        <th>Contact</th>
+        <th>Disease</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for patient in patients %}
+    <tr>
+        <td>{{ patient[0] }}</td>
+        <td>{{ patient[1] }}</td>
+        <td>{{ patient[2] }}</td>
+        <td>{{ patient[3] }}</td>
+        <td>{{ patient[4] }}</td>
+        <td>{{ patient[6] }}</td>
+        <td>
+            <form method="post" action="/patients/{{ patient[0] }}/update">
+                <input name="name" value="{{ patient[1] }}" required>
+                <input type="number" name="age" value="{{ patient[2] }}" min="1" required>
+                <input name="gender" value="{{ patient[3] }}" required>
+                <input name="contact" value="{{ patient[4] }}" required>
+                <input name="address" value="{{ patient[5] or '' }}">
+                <input name="disease" value="{{ patient[6] or '' }}">
+                <input name="symptoms" value="{{ patient[7] or '' }}">
+                <input name="medical_history" value="{{ patient[8] or '' }}">
+                <button type="submit">Save changes</button>
+            </form>
+
+            <form method="post" action="/patients/{{ patient[0] }}/delete"
+                  onsubmit="return confirm('Delete this patient?');">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="7">No patients found.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<p><a href="/">Home</a></p>

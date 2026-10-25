@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctors</title>
+</head>
+<body>
+    <h1>Doctors</h1>
+
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+        <p><label>Name: <input type="text" name="name" required></label></p>
+        <p><label>Specialization: <input type="text" name="specialization" required></label></p>
+        <p><label>Contact: <input type="text" name="contact" required></label></p>
+        <button type="submit">Add Doctor</button>
+    </form>
+
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Specialization</th>
+            <th>Contact</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for doctor in doctors %}
+        <tr>
+            <td>{{ doctor[0] }}</td>
+            <td>{{ doctor[1] }}</td>
+            <td>{{ doctor[2] }}</td>
+            <td>{{ doctor[3] }}</td>
+            <td>
+                <form method="post" action="/doctors/{{ doctor[0] }}/update">
+                    <input name="name" value="{{ doctor[1] }}" required>
+                    <input name="specialization" value="{{ doctor[2] }}" required>
+                    <input name="contact" value="{{ doctor[3] }}" required>
+                    <button type="submit">Save changes</button>
+                </form>
+
+                <form method="post" action="/doctors/{{ doctor[0] }}/delete"
+                      onsubmit="return confirm('Delete this doctor?');">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5">No doctors found.</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p><a href="/">Home</a></p>
+</body>
+</html>

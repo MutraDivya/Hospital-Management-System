@@ -86,3 +86,39 @@ class AppointmentService:
             (appointment_id,)
         )
         print("\nAppointment cancelled successfully!")
+
+
+    def get_all_appointments(self):
+        return self.db.fetch_all("SELECT * FROM appointments")
+
+    def create_appointment(self, patient_id, doctor_name, appointment_date, appointment_time):
+        patient = self.db.fetch_one(
+            "SELECT * FROM patients WHERE patient_id = ?",
+            (patient_id,)
+        )
+
+        if not patient:
+            return False, "Patient ID not found."
+
+        self.db.insert(
+            "appointments",
+            ["patient_id", "doctor_name", "appointment_date", "appointment_time"],
+            (patient_id, doctor_name, appointment_date, appointment_time)
+        )
+        return True, None
+
+    def cancel_appointment_by_id(self, appointment_id):
+        appointment = self.db.fetch_one(
+            "SELECT * FROM appointments WHERE appointment_id = ?",
+            (appointment_id,)
+        )
+
+        if not appointment:
+            return False
+
+        self.db.delete(
+            "appointments",
+            "appointment_id = ?",
+            (appointment_id,)
+        )
+        return True

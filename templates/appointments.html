@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointments</title>
+</head>
+<body>
+    <h1>Appointments</h1>
+
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+        <p>
+            <label>Patient:</label>
+            <select name="patient_id" required>
+                <option value="">Choose a patient</option>
+                {% for patient in patients %}
+                <option value="{{ patient[0] }}">
+                    {{ patient[1] }} (ID {{ patient[0] }})
+                </option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label>Doctor:</label>
+            <select name="doctor_name" required>
+                <option value="">Choose a doctor</option>
+                {% for doctor in doctors %}
+                <option value="{{ doctor[1] }}">
+                    {{ doctor[1] }} — {{ doctor[2] }}
+                </option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label>Date:</label>
+            <input type="date" name="appointment_date" required>
+        </p>
+
+        <p>
+            <label>Time:</label>
+            <input type="time" name="appointment_time" required>
+        </p>
+
+        <button type="submit">Book Appointment</button>
+    </form>
+
+    <h2>Booked Appointments</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Patient ID</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Action</th>
+        </tr>
+
+        {% for appointment in appointments %}
+        <tr>
+            <td>{{ appointment[0] }}</td>
+            <td>{{ appointment[1] }}</td>
+            <td>{{ appointment[2] }}</td>
+            <td>{{ appointment[3] }}</td>
+            <td>{{ appointment[4] }}</td>
+            <td>
+                <form method="post"
+                      action="/appointments/cancel/{{ appointment[0] }}"
+                      onsubmit="return confirm('Cancel this appointment?');">
+                    <button type="submit">Cancel</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6">No appointments found.</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p><a href="/">Home</a></p>
+</body>
+</html>
